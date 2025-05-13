@@ -9,34 +9,35 @@
 // See the file LICENSE for details.
 //
 
-package test
+package infrastructure
 
 import (
 	"errors"
 
 	"braces.dev/errtrace"
+
 	"github.com/unexist/showcase-oras/domain"
 )
 
-type TodoFakeRepository struct {
+type TodoListRepository struct {
 	todos []domain.Todo
 }
 
-func NewTodoFakeRepository() *TodoFakeRepository {
-	return &TodoFakeRepository{
+func NewTodoListRepository() *TodoListRepository {
+	return &TodoListRepository{
 		todos: make([]domain.Todo, 0),
 	}
 }
 
-func (repository *TodoFakeRepository) Open(_ string) error {
+func (repository *TodoListRepository) Open(_ string) error {
 	return nil
 }
 
-func (repository *TodoFakeRepository) GetTodos() ([]domain.Todo, error) {
+func (repository *TodoListRepository) GetTodos() ([]domain.Todo, error) {
 	return repository.todos, nil
 }
 
-func (repository *TodoFakeRepository) CreateTodo(todo *domain.Todo) error {
+func (repository *TodoListRepository) CreateTodo(todo *domain.Todo) error {
 	newTodo := domain.Todo{
 		ID:          len(repository.todos) + 1,
 		Title:       todo.Title,
@@ -50,7 +51,7 @@ func (repository *TodoFakeRepository) CreateTodo(todo *domain.Todo) error {
 	return nil
 }
 
-func (repository *TodoFakeRepository) GetTodo(todoId int) (*domain.Todo, error) {
+func (repository *TodoListRepository) GetTodo(todoId int) (*domain.Todo, error) {
 	for i := 0; i < len(repository.todos); i++ {
 		if repository.todos[i].ID == todoId {
 			return &repository.todos[i], nil
@@ -60,7 +61,7 @@ func (repository *TodoFakeRepository) GetTodo(todoId int) (*domain.Todo, error) 
 	return nil, errtrace.Wrap(errors.New("Not found"))
 }
 
-func (repository *TodoFakeRepository) UpdateTodo(todo *domain.Todo) error {
+func (repository *TodoListRepository) UpdateTodo(todo *domain.Todo) error {
 	for i := 0; i < len(repository.todos); i++ {
 		if repository.todos[i].ID == todo.ID {
 			repository.todos[i].Title = todo.Title
@@ -73,7 +74,7 @@ func (repository *TodoFakeRepository) UpdateTodo(todo *domain.Todo) error {
 	return errtrace.Wrap(errors.New("Not found"))
 }
 
-func (repository *TodoFakeRepository) DeleteTodo(todoId int) error {
+func (repository *TodoListRepository) DeleteTodo(todoId int) error {
 	for i := 0; i < len(repository.todos); i++ {
 		if repository.todos[i].ID == todoId {
 			repository.todos = removeIndex(repository.todos, i)
@@ -85,11 +86,11 @@ func (repository *TodoFakeRepository) DeleteTodo(todoId int) error {
 	return errtrace.Wrap(errors.New("Not found"))
 }
 
-func (repository *TodoFakeRepository) Close() error {
+func (repository *TodoListRepository) Close() error {
 	return nil
 }
 
-func (repository *TodoFakeRepository) Clear() error {
+func (repository *TodoListRepository) Clear() error {
 	repository.todos = make([]domain.Todo, 0)
 
 	return nil

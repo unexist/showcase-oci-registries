@@ -9,8 +9,6 @@
 // See the file LICENSE for details.
 //
 
-//go:build fake
-
 package test
 
 import (
@@ -28,15 +26,16 @@ import (
 
 	"github.com/unexist/showcase-oras/adapter"
 	"github.com/unexist/showcase-oras/domain"
+	"github.com/unexist/showcase-oras/infrastructure"
 )
 
 /* Test globals */
 var engine *gin.Engine
-var todoRepository *TodoFakeRepository
+var todoRepository *TodoListRepository
 
 func TestMain(m *testing.M) {
 	/* Create business stuff */
-	todoRepository = NewTodoFakeRepository()
+	todoRepository = NewTodoListRepository()
 	todoService := domain.NewTodoService(todoRepository)
 	todoResource := adapter.NewTodoResource(todoService)
 
