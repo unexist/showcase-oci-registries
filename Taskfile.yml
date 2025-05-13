@@ -2,7 +2,7 @@ version: '3'
 env:
   PORT: '{{.PORT | default "8080"}}'
   HOST: '{{.HOST | default "localhost"}}'
-  BINARY: '{{ BINARY | default "todo-service.bin"}}'
+  BINARY: '{{.BINARY | default "todo-service.bin"}}'
 
 tasks:
   todo:
@@ -17,7 +17,7 @@ tasks:
 
   swagger:
     cmds:
-      - "cd todo-service-gin; swag init"
+      - "cd todo-service; swag init"
     sources:
       - todo-service/**/*.go
     generates:
@@ -33,7 +33,7 @@ tasks:
 
   build:
     cmds:
-      - "cd todo-service-gin; GO111MODULE=on; go mod download; go build -o {{.BINARY}}"
+      - "cd todo-service; GO111MODULE=on; go mod download; go build -o {{.BINARY}}"
     sources:
       - todo-service/**/*.go
     generates:
@@ -42,8 +42,8 @@ tasks:
   run:
     deps: [build]
     cmds:
-      - "./{{.BINARY}}"
+      - "./todo-service/{{.BINARY}}"
 
   clean:
     cmds:
-      - "rm -rf {{.BINARY}}"
+      - "rm -rf ./todo-service/{{.BINARY}}"
