@@ -1,7 +1,9 @@
-= Showcase for oras
+= Showcase for Oras
 
-This project holds an example for oras
+This project holds an example for Oras
 
 == Links
 
 - https://oras.land
+- https://oras.land/docs/installation#docker-image
+- https://github.com/simple-registry/simple-registry
