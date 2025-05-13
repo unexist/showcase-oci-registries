@@ -1,0 +1,10 @@
+syntax: glob
+
+**/*.iml
+
+target/
+.idea/
+.mvn/
+
+# Antora
+dist/
