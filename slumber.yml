@@ -1,0 +1,63 @@
+profiles:
+    development:
+        data:
+            todo_host: http://localhost:8080
+
+chains:
+    auth_token:
+        source: !request
+            recipe: login
+        selector: $.token
+
+requests:
+    list: !request
+        method: GET
+        url: "{{todo_host}}/todo"
+
+    todo-with-token: !request
+        method: POST
+        url: "{{todo_host}}/todo"
+        headers:
+            accept: application/json
+        authentication: !bearer "{{chains.auth_token}}"
+        body: !json { "description": "string", "done": true, "title": "string" }
+
+    todo-without-token: !request
+        method: POST
+        url: "{{todo_host}}/todo"
+        headers:
+            accept: application/json
+        body: !json { "description": "string", "done": true, "title": "string" }
+
+    todo-with-badword: !request
+        method: POST
+        url: "{{todo_host}}/todo"
+        headers:
+            accept: application/json
+        authentication: !bearer "{{chains.auth_token}}"
+        body: !json { "description": "string", "done": true, "title": "badword" }
+
+    anon: !request
+        method: POST
+        url: "{{todo_host}}/todo/anon"
+        headers:
+            accept: application/json
+        body: !json { "description": "string", "done": true, "title": "string" }
+
+    anon-with-badword: !request
+        method: POST
+        url: "{{todo_host}}/todo/anon"
+        headers:
+            accept: application/json
+        body: !json { "description": "badword", "done": true, "title": "string" }
+
+    login: !request
+        method: POST
+        url: "{{todo_host}}/user/login"
+        headers:
+            accept: application/json
+
+    self: !request
+        method: GET
+        url: "{{todo_host}}/user/self"
+        authentication: !bearer "{{chains.auth_token}}"
