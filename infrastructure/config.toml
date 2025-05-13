@@ -1,0 +1,25 @@
+[server]
+bind_address = "0.0.0.0"
+port = 8000
+
+[storage.fs]
+root_dir = "./data"
+
+[identity.user]
+username = "user"
+password = "$argon2id$v=19$m=16,t=2,p=1$MTIzNDU2Nzg$lurg6dYCXXrJP3zaFwu35w" # test
+
+[repository."test".access_policy]
+default_allow = false
+policies = [
+    'identity.username in ["user"]',
+    '"user" in identity.certificate.common_names',
+    '"admins" in identity.certificate.organizations',
+    """identity.id == "user" && (request.action in [
+    "get-api-version",
+    "put-blob", "get-blob", "delete-blob",
+    "put-manifest", "get-manifest", "delete-manifest",
+    "get-referrers",
+    "list-catalog",
+    "list-tags"])"""
+]
