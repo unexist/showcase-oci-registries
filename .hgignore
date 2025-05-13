@@ -6,5 +6,5 @@ target/
 .idea/
 .mvn/
 
-# Antora
-dist/
+.task/
+todo-service/todo-service.bin
