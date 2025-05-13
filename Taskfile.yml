@@ -4,6 +4,10 @@ env:
   HOST: '{{.HOST | default "localhost"}}'
   BINARY: '{{.BINARY | default "todo-service.bin"}}'
 
+includes:
+  infra:
+    taskfile: ./infrastructure/Taskfile.yml
+
 tasks:
   todo:
     vars:
