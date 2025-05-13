@@ -20,29 +20,14 @@ import (
 	"github.com/unexist/showcase-oras/domain"
 	"github.com/unexist/showcase-oras/infrastructure"
 
-	"fmt"
 	"log"
-	"os"
 )
 
 func main() {
 	/* Create business stuff */
-	var todoRepository *infrastructure.TodoGormRepository
+	var todoRepository *infrastructure.TodoListRepository
 
-	todoRepository = infrastructure.NewTodoGormRepository()
-
-	/* Create database connection */
-	connectionString :=
-		fmt.Sprintf("user=%s password=%s dbname=%s host=localhost port=5432 sslmode=disable",
-			os.Getenv("APP_DB_USERNAME"),
-			os.Getenv("APP_DB_PASSWORD"),
-			os.Getenv("APP_DB_NAME"))
-
-	err := todoRepository.Open(connectionString)
-
-	if nil != err {
-		log.Fatal(err)
-	}
+	todoRepository = infrastructure.NewTodoListRepository()
 
 	defer todoRepository.Close()
 
