@@ -1,7 +1,7 @@
 //
-// @package Showcase-Microservices-Golang
+// @package Showcase-Oras
 //
-// @file Todo tests for SQLX
+// @file Todo tests for list repository
 // @copyright 2023-present Christoph Kappel <christoph@unexist.dev>
 // @version $Id$
 //
@@ -9,54 +9,34 @@
 // See the file LICENSE for details.
 //
 
-//go:build sqlx
+//go:build fake
 
 package test
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 
 	"os"
 	"testing"
 
-	"github.com/unexist/showcase-microservices-golang/adapter"
-	"github.com/unexist/showcase-microservices-golang/domain"
-	"github.com/unexist/showcase-microservices-golang/infrastructure"
-
 	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
+
+	"github.com/unexist/showcase-oras/adapter"
+	"github.com/unexist/showcase-oras/domain"
 )
 
 /* Test globals */
 var engine *gin.Engine
-var todoRepository *infrastructure.TodoSQLXRepository
+var todoRepository *TodoFakeRepository
 
 func TestMain(m *testing.M) {
-	/* Create database connection */
-	todoRepository = infrastructure.NewTodoSQLXRepository()
-
-	connectionString :=
-		fmt.Sprintf("user=%s password=%s dbname=%s host=localhost port=5432 sslmode=disable",
-			os.Getenv("TEST_DB_USERNAME"),
-			os.Getenv("TEST_DB_PASSWORD"),
-			os.Getenv("TEST_DB_NAME"))
-
-	err := todoRepository.Open(connectionString)
-
-	if nil != err {
-		log.Fatal(err)
-	}
-
-	defer todoRepository.Close()
-
 	/* Create business stuff */
+	todoRepository = NewTodoFakeRepository()
 	todoService := domain.NewTodoService(todoRepository)
 	todoResource := adapter.NewTodoResource(todoService)
 

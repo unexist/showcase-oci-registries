@@ -1,8 +1,8 @@
 version: '3'
 env:
-  JAR_VERSION: '{{.JAR_VERSION | default "0.1"}}'
   PORT: '{{.PORT | default "8080"}}'
   HOST: '{{.HOST | default "localhost"}}'
+  BINARY: '{{ BINARY | default "todo-service.bin"}}'
 
 tasks:
   todo:
@@ -15,23 +15,35 @@ tasks:
     cmds:
       - "curl -X GET 'http://{{.HOST}}:{{.PORT}}/todo' -H 'accept: */*' | jq ."
 
+  swagger:
+    cmds:
+      - "cd todo-service-gin; swag init"
+    sources:
+      - todo-service/**/*.go
+    generates:
+      - todo-service/docs/swagger.yaml
+
+  vet:
+    cmds:
+      - "cd todo-service; go vet"
+
   test:
     cmds:
       - hurl --test todo.hurl
 
   build:
     cmds:
-      - mvn package
+      - "cd todo-service-gin; GO111MODULE=on; go mod download; go build -o {{.BINARY}}"
     sources:
-      - todo-service-mqtt-ktor/src/main/kotlin/**/*.kt
+      - todo-service/**/*.go
     generates:
-      - todo-service-mqtt-ktor/target/todo-service-{{.JAR_VERSION}}-jar-with-dependencies.jar
+      - todo-service/{{.BINARY}}
 
   run:
     deps: [build]
     cmds:
-      - java -jar todo-service-mqtt-ktor/target/todo-service-mqtt-ktor-{{.JAR_VERSION}}-jar-with-dependencies.jar
+      - "./{{.BINARY}}"
 
   clean:
     cmds:
-      - mvn clean
+      - "rm -rf {{.BINARY}}"

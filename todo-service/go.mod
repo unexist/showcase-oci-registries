@@ -1,22 +1,14 @@
-module github.com/unexist/showcase-microservices-golang
+module github.com/unexist/showcase-oras
 
 go 1.23.4
 
 require (
 	braces.dev/errtrace v0.2.0
-	github.com/IBM/sarama v1.42.1
-	github.com/cucumber/godog v0.13.0
-	github.com/datosh/gau v0.0.0-20220607151324-6310ca47fc88
 	github.com/gin-gonic/gin v1.9.1
-	github.com/google/wire v0.5.0
-	github.com/jmoiron/sqlx v1.3.5
-	github.com/lib/pq v1.10.9
 	github.com/stretchr/testify v1.8.4
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.2
-	gorm.io/driver/postgres v1.5.4
-	gorm.io/gorm v1.25.5
 )
 
 require (

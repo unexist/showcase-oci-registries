@@ -1,5 +1,5 @@
 //
-// @package Showcase-Microservices-Golang
+// @package Showcase-Oras
 //
 // @file Todo resource
 // @copyright 2023-present Christoph Kappel <christoph@unexist.dev>
@@ -19,11 +19,10 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"github.com/unexist/showcase-microservices-golang/docs"
-	"github.com/unexist/showcase-microservices-golang/domain"
+	"github.com/unexist/showcase-oras/docs"
+	"github.com/unexist/showcase-oras/domain"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/lib/pq"
 )
 
 // @title OpenAPI for Todo showcase

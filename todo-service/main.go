@@ -1,5 +1,5 @@
 //
-// @package Showcase-Microservices-Golang
+// @package Showcase-Oras
 //
 // @file Todo main
 // @copyright 2023-present Christoph Kappel <christoph@unexist.dev>
@@ -16,9 +16,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/unexist/showcase-microservices-golang/adapter"
-	"github.com/unexist/showcase-microservices-golang/domain"
-	"github.com/unexist/showcase-microservices-golang/infrastructure"
+	"github.com/unexist/showcase-oras/adapter"
+	"github.com/unexist/showcase-oras/domain"
+	"github.com/unexist/showcase-oras/infrastructure"
 
 	"fmt"
 	"log"

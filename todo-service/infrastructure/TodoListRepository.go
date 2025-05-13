@@ -1,7 +1,7 @@
 //
-// @package Showcase-Microservices-Golang
+// @package Showcase-Oras
 //
-// @file Todo fake repository
+// @file Todo list repository
 // @copyright 2023-present Christoph Kappel <christoph@unexist.dev>
 // @version $Id$
 //
@@ -15,7 +15,7 @@ import (
 	"errors"
 
 	"braces.dev/errtrace"
-	"github.com/unexist/showcase-microservices-golang/domain"
+	"github.com/unexist/showcase-oras/domain"
 )
 
 type TodoFakeRepository struct {

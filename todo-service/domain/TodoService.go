@@ -1,5 +1,5 @@
 //
-// @package Showcase-Microservices-Golang
+// @package Showcase-Oras
 //
 // @file Todo service
 // @copyright 2023-present Christoph Kappel <christoph@unexist.dev>
