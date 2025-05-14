@@ -16,11 +16,17 @@ tasks:
       - task: oras
         vars: { ARGS: "login -u {{.USERNAME}} -p {{.PASSWORD}} {{.REGISTRY_URL}}" }
 
-  registry:
+  simple-registry:
     cmds:
       - |
-        podman run --rm -it --name registry \
-          -v ./infrastructure/config.toml:/config.toml \
-          -p 8000:8000 \
+        podman run --rm -it --name simple-registry -p 5000:5000 \
+          -v ./infrastructure/simple-registry/config.toml:/config.toml \
           ghcr.io/simple-registry/simple-registry:main \
-          simple-registry server
+          server
+
+  zot-registry:
+    cmds:
+      - |
+        podman run --rm -it --name simple-registry -p 5000:5000 \
+          -v ./infrastructure/zot-registry/config.json:/etc/zot/config.json \
+        ghcr.io/project-zot/zot-linux-amd64:v2.1.2
