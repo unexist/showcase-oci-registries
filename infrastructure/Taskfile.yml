@@ -1,6 +1,6 @@
 version: '3'
 env:
-  REGISTRY_URL: '{{.REGISTRY_URL | default "localhost:8000"}}'
+  REGISTRY_URL: '{{.REGISTRY_URL | default "localhost:5000"}}'
   USERNAME: '{{.USERNAME | default "user"}}'
   PASSWORD: '{{.PASSWORD | default "test"}}'
 
@@ -9,7 +9,7 @@ tasks:
     cmds:
       - |
         podman run --rm -v .:/workspace -it --name oras \
-          ghcr.io/oras-project/oras:latest {{.ARGS}}
+          ghcr.io/oras-project/oras:main {{.ARGS}}
 
   oras-login:
     cmds:
