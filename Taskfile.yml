@@ -48,6 +48,12 @@ tasks:
     cmds:
       - "./todo-service/{{.BINARY}}"
 
+  install:
+    cmds:
+      - "go install github.com/swaggo/swag/cmd/swag@latest"
+      - "go install braces.dev/errtrace/cmd/errtrace@latest"
+      - "go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@latest"
+
   clean:
     cmds:
       - "rm -rf ./todo-service/{{.BINARY}}"
