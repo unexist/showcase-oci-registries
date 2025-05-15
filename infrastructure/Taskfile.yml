@@ -1,25 +1,73 @@
 version: '3'
 env:
-  REGISTRY_URL: '{{.REGISTRY_URL | default "localhost:5000"}}'
+  REGISTRY_URL: '{{.REGISTRY_URL | default "127.0.0.1:5000"}}'
   USERNAME: '{{.USERNAME | default "user"}}'
   PASSWORD: '{{.PASSWORD | default "test"}}'
+  VERSION: '{{.VERSION | default "latest"}}'
+  ARTIFACT_NAME: '{{.ARTIFACT_NAME | default "todo-service"}}'
+  ARTIFACT_TYPE: '{{.ARTIFACT_TYPE | default ""}}'
 
 tasks:
   oras:
     cmds:
       - |
         podman run --rm -v .:/workspace -it --name oras \
-          ghcr.io/oras-project/oras:main {{.ARGS}}
+          --network=host \
+          ghcr.io/oras-project/oras:main {{.ARGS}} --plain-http
 
-  oras-login:
+  oras-push:
     cmds:
       - task: oras
-        vars: { ARGS: "login -u {{.USERNAME}} -p {{.PASSWORD}} {{.REGISTRY_URL}}" }
+        vars: { ARGS: "push --artifact-type {{.ARTIFACT_TYPE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}} todo-service/{{.BINARY}}" }
+
+  oras-blob:
+    cmds:
+      - task: oras
+        vars: { ARGS: "blob push --descriptor --pretty {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}} todo-service/{{.BINARY}}" }
+
+  oras-sbom:
+    deps: [cyclone-sbom]
+    cmds:
+      - task: oras
+        vars: { ARGS: "attach --artifact-type application/vnd.unknown.config.v1+json pull {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}} sbom.json" }
+
+  oras-pull:
+    cmds:
+      - task: oras
+        vars: { ARGS: "pull {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}}" }
+
+  oras-annotate:
+    cmds:
+      - task: oras
+        vars: { ARGS: "push --annotation {{.ARGS}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}} todo-service/{{.BINARY}}" }
+
+  oras-list:
+    cmds:
+      - task: oras
+        vars: { ARGS: "repo list {{.REGISTRY_URL}}" }
+
+  oras-discover:
+    cmds:
+      - task: oras
+        vars: { ARGS: "discover {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}}" }
+
+  cyclonex-sbom:
+    cmds:
+      - |
+        podman run -it --rm \
+          -v ./todo-service:/in \
+          -v .:/out:z \
+          docker.io/cyclonedx/cyclonedx-gomod:v1 mod -json -output /out/bom.json /in
+    sources:
+      - todo-service/**/*.go
+    generates:
+      - sbom.json
 
   simple-registry:
     cmds:
       - |
         podman run --rm -it --name simple-registry -p 5000:5000 \
+          --network=host \
           -v ./infrastructure/simple-registry/config.toml:/config.toml \
           ghcr.io/simple-registry/simple-registry:main \
           server
@@ -27,6 +75,9 @@ tasks:
   zot-registry:
     cmds:
       - |
-        podman run --rm -it --name simple-registry -p 5000:5000 \
+        podman run --rm -it --name zot-registry -p 5000:5000 \
+          --network=host \
           -v ./infrastructure/zot-registry/config.json:/etc/zot/config.json \
-        ghcr.io/project-zot/zot-linux-amd64:v2.1.2
+          ghcr.io/project-zot/zot-linux-amd64:v2.1.2
+
+  open: "open http://{{.REGISTRY_URL}}"

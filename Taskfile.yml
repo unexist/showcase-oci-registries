@@ -43,6 +43,10 @@ tasks:
     generates:
       - todo-service/{{.BINARY}}
 
+  sbom:
+    cmds:
+      - ""
+
   run:
     deps: [build]
     cmds:
