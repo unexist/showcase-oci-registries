@@ -1,7 +1,7 @@
 {
     "distSpecVersion": "1.1.1",
     "storage": {
-        "rootDirectory": "/tmp/zot"
+        "rootDirectory": "/var/lib/registry"
     },
     "http": {
         "address": "0.0.0.0",
@@ -9,5 +9,16 @@
     },
     "log": {
         "level": "debug"
+    },
+    "extensions": {
+       "search": {
+           "enable": true,
+            "cve": {
+                "updateInterval": "2h"
+            }
+        },
+        "ui": {
+            "enable": true
+        }
     }
 }
