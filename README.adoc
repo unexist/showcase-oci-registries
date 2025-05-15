@@ -7,6 +7,7 @@ This project holds an example for Oras
 - https://oras.land
 - https://oras.land/docs/installation#docker-image
 - https://oras.land/docs/concepts/reftypes
+- https://oras.land/docs/commands/oras_blob_push
 - https://github.com/simple-registry/simple-registry
 - https://github.com/opencontainers/image-spec/blob/main/media-types.md
 - https://zotregistry.dev/v2.1.2/admin-guide/admin-configuration/
