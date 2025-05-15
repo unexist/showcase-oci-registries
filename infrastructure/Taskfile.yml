@@ -5,14 +5,13 @@ env:
   PASSWORD: '{{.PASSWORD | default "test"}}'
   VERSION: '{{.VERSION | default "latest"}}'
   ARTIFACT_NAME: '{{.ARTIFACT_NAME | default "todo-service"}}'
-  ARTIFACT_TYPE: '{{.ARTIFACT_TYPE | default ""}}'
+  ARTIFACT_TYPE: '{{.ARTIFACT_TYPE | default "application/vnd.oci.image.layer.v1.tar"}}'
 
 tasks:
   oras:
     cmds:
       - |
-        podman run --rm -v .:/workspace -it --name oras \
-          --network=host \
+        podman run --rm -v .:/workspace -it --name oras --network=host \
           ghcr.io/oras-project/oras:main {{.ARGS}} --plain-http
 
   oras-push:
@@ -20,21 +19,21 @@ tasks:
       - task: oras
         vars: { ARGS: "push --artifact-type {{.ARTIFACT_TYPE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}} todo-service/{{.BINARY}}" }
 
+  oras-pull:
+    cmds:
+      - task: oras
+        vars: { ARGS: "pull {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}}" }
+
   oras-blob:
     cmds:
       - task: oras
         vars: { ARGS: "blob push --descriptor --pretty {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}} todo-service/{{.BINARY}}" }
 
   oras-sbom:
-    deps: [cyclone-sbom]
+    deps: [cyclonex-sbom]
     cmds:
       - task: oras
-        vars: { ARGS: "attach --artifact-type application/vnd.unknown.config.v1+json pull {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}} sbom.json" }
-
-  oras-pull:
-    cmds:
-      - task: oras
-        vars: { ARGS: "pull {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}}" }
+        vars: { ARGS: "attach --artifact-type application/vnd.unknown.config.v1+json {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}} sbom.json" }
 
   oras-annotate:
     cmds:
@@ -51,17 +50,7 @@ tasks:
       - task: oras
         vars: { ARGS: "discover {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}}" }
 
-  cyclonex-sbom:
-    cmds:
-      - |
-        podman run -it --rm \
-          -v ./todo-service:/in \
-          -v .:/out:z \
-          docker.io/cyclonedx/cyclonedx-gomod:v1 mod -json -output /out/bom.json /in
-    sources:
-      - todo-service/**/*.go
-    generates:
-      - sbom.json
+
 
   simple-registry:
     cmds:
@@ -81,3 +70,5 @@ tasks:
           ghcr.io/project-zot/zot-linux-amd64:v2.1.2
 
   open: "open http://{{.REGISTRY_URL}}"
+https://github:
+  com/CycloneDX/cyclonedx-gomod:
