@@ -30,7 +30,7 @@ tasks:
         vars: { ARGS: "blob push --descriptor --pretty {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}} todo-service/{{.BINARY}}" }
 
   oras-sbom:
-    deps: [cyclonex-sbom]
+    deps: [sbom-cyclonex]
     cmds:
       - task: oras
         vars: { ARGS: "attach --artifact-type application/vnd.unknown.config.v1+json {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}} sbom.json" }
@@ -50,7 +50,7 @@ tasks:
       - task: oras
         vars: { ARGS: "discover {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}}" }
 
-  cyclonex-sbom:
+  sbom-cyclonex:
     cmds:
       - |
         podman run -it --rm \
@@ -61,6 +61,13 @@ tasks:
       - todo-service/**/*.go
     generates:
       - sbom.json
+
+  sbom-trivy:
+    cmds:
+      - |
+        podman run -it --rm \
+          -v ./sbom.json:/sbom.json \
+          docker.io/aquasec/trivy:latest sbom /sbom.json
 
   simple-registry:
     cmds:
