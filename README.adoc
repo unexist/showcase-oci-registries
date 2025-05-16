@@ -11,3 +11,5 @@ This project holds an example for Oras
 - https://github.com/simple-registry/simple-registry
 - https://github.com/opencontainers/image-spec/blob/main/media-types.md
 - https://zotregistry.dev/v2.1.2/admin-guide/admin-configuration/
+- https://trivy.dev/v0.33/docs/sbom/#scanning
+- https://github.com/sigstore/cosign
