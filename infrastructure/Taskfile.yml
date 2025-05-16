@@ -50,7 +50,17 @@ tasks:
       - task: oras
         vars: { ARGS: "discover {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}:{{.VERSION}}" }
 
-
+  cyclonex-sbom:
+    cmds:
+      - |
+        podman run -it --rm \
+          -v ./todo-service:/in \
+          -v ./sbom.json:/go/sbom.json:z \
+          docker.io/cyclonedx/cyclonedx-gomod:v1 mod -json -output /go/sbom.json /in
+    sources:
+      - todo-service/**/*.go
+    generates:
+      - sbom.json
 
   simple-registry:
     cmds:
@@ -70,5 +80,3 @@ tasks:
           ghcr.io/project-zot/zot-linux-amd64:v2.1.2
 
   open: "open http://{{.REGISTRY_URL}}"
-https://github:
-  com/CycloneDX/cyclonedx-gomod:
