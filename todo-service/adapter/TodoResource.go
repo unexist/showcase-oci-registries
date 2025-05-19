@@ -1,5 +1,5 @@
 //
-// @package Showcase-Oras
+// @package Showcase-OCI-Registries
 //
 // @file Todo resource
 // @copyright 2023-present Christoph Kappel <christoph@unexist.dev>
