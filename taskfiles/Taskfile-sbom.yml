@@ -16,5 +16,5 @@ tasks:
     cmds:
       - |
         podman run -it --rm \
-          -v ./sbom.json:/sbom.json \
-          docker.io/aquasec/trivy:latest sbom /sbom.json
+          -v ./{{.SBOM_FILE}}:/{{.SBOM_FILE}} \
+          docker.io/aquasec/trivy:latest sbom /{{.SBOM_FILE}}

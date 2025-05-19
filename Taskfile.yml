@@ -2,7 +2,8 @@ version: '3'
 env:
   PORT: '{{.PORT | default "8080"}}'
   HOST: '{{.HOST | default "localhost"}}'
-  BINARY: '{{.BINARY | default "todo-service.bin"}}'
+  BINARY_FILE: '{{.BINARY_FILE | default "todo-service.bin"}}'
+  SBOM_FILE: '{{.SBOM_FILE | default "sbom.json"}}'
   REGISTRY_URL: '{{.REGISTRY_URL | default "127.0.0.1:5000"}}'
   USERNAME: '{{.USERNAME | default "user"}}'
   PASSWORD: '{{.PASSWORD | default "test"}}'
@@ -10,18 +11,15 @@ env:
   ARTIFACT_NAME: '{{.ARTIFACT_NAME | default "todo-service"}}'
   ARTIFACT_TYPE: '{{.ARTIFACT_TYPE | default "application/vnd.oci.image.layer.v1.tar"}}'
 
-  includes:
-
-
 includes:
   registry:
-    taskfile: ./infrastructure/Taskfile-registry.yml
+    taskfile: ./taskfiles/Taskfile-registry.yml
   oras:
-    taskfile: ./infrastructure/Taskfile-oras.yml
+    taskfile: ./taskfiles/Taskfile-oras.yml
   cosign:
-    taskfile: ./infrastructure/Taskfile-cosign.yml
+    taskfile: ./taskfiles/Taskfile-cosign.yml
   sbom:
-    taskfile: ./infrastructure/Taskfile-sbom.yml
+    taskfile: ./taskfiles/Taskfile-sbom.yml
 
 tasks:
   todo:
@@ -52,11 +50,11 @@ tasks:
 
   build:
     cmds:
-      - "cd todo-service; GO111MODULE=on; go mod download; go build -o {{.BINARY}}"
+      - "cd todo-service; GO111MODULE=on; go mod download; go build -o {{.BINARY_FILE}}"
     sources:
       - todo-service/**/*.go
     generates:
-      - todo-service/{{.BINARY}}
+      - todo-service/{{.BINARY_FILE}}
 
   sbom:
     cmds:
@@ -65,7 +63,7 @@ tasks:
   run:
     deps: [build]
     cmds:
-      - "./todo-service/{{.BINARY}}"
+      - "./todo-service/{{.BINARY_FILE}}"
 
   install:
     cmds:
@@ -75,4 +73,5 @@ tasks:
 
   clean:
     cmds:
-      - "rm -rf ./todo-service/{{.BINARY}}"
+      - "rm -rf ./todo-service/{{.BINARY_FILE}}"
+      - "rm -rf ./todo-service/{{.SBOM_FILE}}"
