@@ -11,14 +11,14 @@ tasks:
   blob:
     cmds:
       - task: container
-        vars: { ARGS: "upload blob -f /workspace/todo-service/{{.BINARY_FILE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign:{{.VERSION}}" }
+        vars: { ARGS: "upload blob -f /workspace/todo-service/{{.BINARY_FILE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
 
-  attest:
+  sbom:
     cmds:
       - task: container
-        vars: { ARGS: "attest --yes --type cyclonedx --predicate /workspace/{{.SBOM_FILE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign:{{.VERSION}}" }
+        vars: { ARGS: "attest --yes --type cyclonedx --predicate /workspace/{{.SBOM_FILE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
 
   sign:
     cmds:
       - task: container
-        vars: { ARGS: "sign-blob --yes {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign:{{.VERSION}}" }
+        vars: { ARGS: "sign-blob --yes {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
