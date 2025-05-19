@@ -1,6 +1,6 @@
-= Showcase for Oras
+= Showcase for OCI registries
 
-This project holds an example for Oras
+This project holds an example for OCI registries and related tooling.
 
 == Links
 
