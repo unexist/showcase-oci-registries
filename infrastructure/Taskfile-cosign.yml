@@ -1,0 +1,9 @@
+version: '3'
+
+tasks:
+  container:
+    internal: true
+    cmds:
+      - |
+        podman run -rm -v .:/workspace --name cosign --network=host \
+          ghcr.io/sigstore/cosign/cosign:v2.4.1 cosign {{.ARGS}}

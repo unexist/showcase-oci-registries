@@ -1,0 +1,22 @@
+version: '3'
+
+
+tasks:
+  simple-registry:
+    cmds:
+      - |
+        podman run --rm -it --name simple-registry -p 5000:5000 \
+          --network=host \
+          -v ./infrastructure/simple-registry/config.toml:/config.toml \
+          ghcr.io/simple-registry/simple-registry:main \
+          server
+
+  zot:
+    cmds:
+      - |
+        podman run --rm -it --name zot-registry -p 5000:5000 \
+          --network=host \
+          -v ./infrastructure/zot-registry/config.json:/etc/zot/config.json \
+          ghcr.io/project-zot/zot-linux-amd64:v2.1.2
+
+  open: "open http://{{.REGISTRY_URL}}"

@@ -3,10 +3,25 @@ env:
   PORT: '{{.PORT | default "8080"}}'
   HOST: '{{.HOST | default "localhost"}}'
   BINARY: '{{.BINARY | default "todo-service.bin"}}'
+  REGISTRY_URL: '{{.REGISTRY_URL | default "127.0.0.1:5000"}}'
+  USERNAME: '{{.USERNAME | default "user"}}'
+  PASSWORD: '{{.PASSWORD | default "test"}}'
+  VERSION: '{{.VERSION | default "latest"}}'
+  ARTIFACT_NAME: '{{.ARTIFACT_NAME | default "todo-service"}}'
+  ARTIFACT_TYPE: '{{.ARTIFACT_TYPE | default "application/vnd.oci.image.layer.v1.tar"}}'
+
+  includes:
+
 
 includes:
-  infra:
-    taskfile: ./infrastructure/Taskfile.yml
+  registry:
+    taskfile: ./infrastructure/Taskfile-registry.yml
+  oras:
+    taskfile: ./infrastructure/Taskfile-oras.yml
+  cosign:
+    taskfile: ./infrastructure/Taskfile-cosign.yml
+  sbom:
+    taskfile: ./infrastructure/Taskfile-sbom.yml
 
 tasks:
   todo:
