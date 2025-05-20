@@ -13,3 +13,4 @@ This project holds an example for OCI registries and related tooling.
 - https://zotregistry.dev/v2.1.2/admin-guide/admin-configuration/
 - https://trivy.dev/v0.33/docs/sbom/#scanning
 - https://github.com/sigstore/cosign
+- https://blog.christophersmart.com/2021/01/31/volumes-and-rootless-podman/
