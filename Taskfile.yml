@@ -56,6 +56,10 @@ tasks:
     generates:
       - todo-service/{{.BINARY_FILE}}
 
+  ko:
+    cmds:
+      - "cd todo-service; KO_DOCKER_REPO={{.REGISTRY_URL}}/{{.ARTIFACT_NAME}} ko build ."
+
   sbom:
     cmds:
       - ""
@@ -70,6 +74,7 @@ tasks:
       - "go install github.com/swaggo/swag/cmd/swag@latest"
       - "go install braces.dev/errtrace/cmd/errtrace@latest"
       - "go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@latest"
+      - "go install github.com/google/ko@latest"
 
   clean:
     cmds:
