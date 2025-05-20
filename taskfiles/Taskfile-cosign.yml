@@ -1,24 +1,46 @@
 version: '3'
 
+env:
+  COSIGN_PASSWORD: '{{.COSIGN_PASSWORD | default ""}}'
+  OIDC_ISSUER: '{{.OIDC_ISSUER | default "https://github.com/login/oauth"}}'
+
 tasks:
   container:
     internal: true
     cmds:
       - |
         podman run --rm -v .:/workspace --name cosign --network=host \
+          -e COSIGN_PASSWORD={{.COSIGN_PASSWORD}} \
           ghcr.io/sigstore/cosign/cosign:v2.4.1 {{.ARGS}}
 
   blob:
     cmds:
       - task: container
-        vars: { ARGS: "upload blob -f /workspace/todo-service/{{.BINARY_FILE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
+        vars: { ARGS: "upload blob -f /workspace/todo-service/{{.BINARY_FILE}} \
+          {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign:{{.VERSION}}" }
 
   sbom:
     cmds:
       - task: container
-        vars: { ARGS: "attest --yes --type cyclonedx --predicate /workspace/{{.SBOM_FILE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
+        vars: { ARGS: "attest-blob --yes --predicate /workspace/{{.SBOM_FILE}} \
+          --type cyclonedx {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign:{{.VERSION}}" }
+
+  verify:
+    deps: [sign]
+    cmds:
+      - task: container
+        vars: { ARGS: "verify-blob --bundle /workspace/cosign.bundle \
+          --certificate-oidc-issuer={{.OIDC_ISSUER}} \
+          --certificate-identity=christoph@unexist.dev  \
+         
+         
+          /workspace/todo-service/{{.BINARY_FILE}}" }
+
 
   sign:
     cmds:
       - task: container
-        vars: { ARGS: "sign-blob --yes {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
+        vars: { ARGS: "sign-blob --yes --bundle /workspace/cosign.bundle \
+          /workspace/todo-service/{{.BINARY_FILE}}" }
+    status:
+      - test -s cosign.bundle
