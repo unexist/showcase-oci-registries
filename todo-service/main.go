@@ -16,9 +16,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/unexist/showcase-oras/adapter"
-	"github.com/unexist/showcase-oras/domain"
-	"github.com/unexist/showcase-oras/infrastructure"
+	"github.com/unexist/showcase-oci-registries/adapter"
+	"github.com/unexist/showcase-oci-registries/domain"
+	"github.com/unexist/showcase-oci-registries/infrastructure"
 
 	"log"
 )

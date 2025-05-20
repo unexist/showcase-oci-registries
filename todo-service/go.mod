@@ -1,4 +1,4 @@
-module github.com/unexist/showcase-oras
+module github.com/unexist/showcase-oci-registries
 
 go 1.23.4
 

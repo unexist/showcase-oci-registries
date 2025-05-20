@@ -16,7 +16,7 @@ import (
 
 	"braces.dev/errtrace"
 
-	"github.com/unexist/showcase-oras/domain"
+	"github.com/unexist/showcase-oci-registries/domain"
 )
 
 type TodoListRepository struct {

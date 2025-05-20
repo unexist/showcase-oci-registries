@@ -24,9 +24,9 @@ import (
 	"net/http/httptest"
 	"strconv"
 
-	"github.com/unexist/showcase-oras/adapter"
-	"github.com/unexist/showcase-oras/domain"
-	"github.com/unexist/showcase-oras/infrastructure"
+	"github.com/unexist/showcase-oci-registries/adapter"
+	"github.com/unexist/showcase-oci-registries/domain"
+	"github.com/unexist/showcase-oci-registries/infrastructure"
 )
 
 /* Test globals */

@@ -19,8 +19,8 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"github.com/unexist/showcase-oras/docs"
-	"github.com/unexist/showcase-oras/domain"
+	"github.com/unexist/showcase-oci-registries/docs"
+	"github.com/unexist/showcase-oci-registries/domain"
 
 	"github.com/gin-gonic/gin"
 )
