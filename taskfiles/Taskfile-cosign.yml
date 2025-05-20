@@ -3,6 +3,7 @@ version: '3'
 env:
   COSIGN_PASSWORD: '{{.COSIGN_PASSWORD | default ""}}'
   OIDC_ISSUER: '{{.OIDC_ISSUER | default "https://github.com/login/oauth"}}'
+  OIDC_IDENTITY: '{{.OIDC_IDENTITY | default "christoph@unexist.dev"}}'
 
 tasks:
   container:
@@ -17,7 +18,7 @@ tasks:
     cmds:
       - task: container
         vars: { ARGS: "upload blob -f /workspace/todo-service/{{.BINARY_FILE}} \
-          {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign:{{.VERSION}}" }
+          {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
 
   sbom:
     cmds:
@@ -25,22 +26,24 @@ tasks:
         vars: { ARGS: "attest-blob --yes --predicate /workspace/{{.SBOM_FILE}} \
           --type cyclonedx {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign:{{.VERSION}}" }
 
-  verify:
+  verify-local:
     deps: [sign]
     cmds:
       - task: container
         vars: { ARGS: "verify-blob --bundle /workspace/cosign.bundle \
           --certificate-oidc-issuer={{.OIDC_ISSUER}} \
-          --certificate-identity=christoph@unexist.dev  \
-         
-         
+          --certificate-identity={{.OIDC_IDENTITY}}  \
           /workspace/todo-service/{{.BINARY_FILE}}" }
 
-
-  sign:
+  sign-local:
     cmds:
       - task: container
         vars: { ARGS: "sign-blob --yes --bundle /workspace/cosign.bundle \
           /workspace/todo-service/{{.BINARY_FILE}}" }
     status:
       - test -s cosign.bundle
+
+  sign:
+    cmds:
+      - task: container
+        vars: { ARGS: "sign --yes {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
