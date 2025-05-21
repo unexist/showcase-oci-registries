@@ -1,6 +1,5 @@
 version: '3'
 
-
 tasks:
   simple-registry:
     cmds:
