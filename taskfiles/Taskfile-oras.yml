@@ -26,7 +26,7 @@ tasks:
   sbom:
     cmds:
       - task: container
-        vars: { ARGS: "attach --artifact-type application/vnd.unknown.config.v1+json {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.VERSION}} {{.SBOM_FILE}}" }
+        vars: { ARGS: "attach --artifact-type {{.ARTIFACT_SBOM_TYPE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.VERSION}} {{.SBOM_FILE}}" }
 
   annotate:
     cmds:

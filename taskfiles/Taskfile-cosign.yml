@@ -2,6 +2,8 @@ version: '3'
 
 env:
   COSIGN_PASSWORD: '{{.COSIGN_PASSWORD | default ""}}'
+  COSIGN_SIG: '{{.COSIGN_SIG | default "cosign.sig"}}'
+  COSIGN_BUNDLE: '{{.COSIGN_BUNDLE | default "cosign.bundle"}}'
   OIDC_ISSUER: '{{.OIDC_ISSUER | default "https://github.com/login/oauth"}}'
   OIDC_IDENTITY: '{{.OIDC_IDENTITY | default "christoph@unexist.dev"}}'
 
@@ -38,18 +40,29 @@ tasks:
         vars: { ARGS: "sign --yes {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
 
   verify-local:
-    deps: [sign]
     cmds:
       - task: container
-        vars: { ARGS: "verify-blob --bundle /workspace/cosign.bundle \
+        vars: { ARGS: "verify-blob  \
+          --bundle /workspace/{{.COSIGN_BUNDLE}}
+          --signature /workspace/{{.COSIGN_SIG}} \
           --certificate-oidc-issuer={{.OIDC_ISSUER}} \
           --certificate-identity={{.OIDC_IDENTITY}}  \
           /workspace/todo-service/{{.BINARY_FILE}}" }
+    status:
+      - !test -s {{.COSIGN_SIG}}
 
   sign-local:
     cmds:
+      - chmod 666 {{.COSIGN_SIG}}
       - task: container
-        vars: { ARGS: "sign-blob --yes --bundle /workspace/cosign.bundle \
+        vars: { ARGS: "sign-blob --yes \
+          --bundle /workspace/{{.COSIGN_BUNDLE}} \
+          --output-signature /workspace/{{.COSIGN_SIG}} \
           /workspace/todo-service/{{.BINARY_FILE}}" }
     status:
-      - test -s cosign.bundle
+      - test -s {{.COSIGN_SIG}}
+
+  clean:
+    cmds:
+      - truncate -s 0 {{.COSIGN_BUNDLE}}
+      - truncate -s 0 {{.COSIGN_SIG}}

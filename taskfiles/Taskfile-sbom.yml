@@ -24,3 +24,7 @@ tasks:
       - todo-service/**/*.go
     generates:
       - "{{.SBOM_FILE}}"
+
+  clean:
+    cmds:
+      - truncate -s 0 {{.SBOM_FILE}}
