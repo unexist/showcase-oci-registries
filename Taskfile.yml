@@ -1,13 +1,17 @@
 version: '3'
 env:
-  PORT: '{{.PORT | default "8080"}}'
   HOST: '{{.HOST | default "localhost"}}'
-  BINARY_FILE: '{{.BINARY_FILE | default "todo-service.bin"}}'
-  SBOM_FILE: '{{.SBOM_FILE | default "sbom.json"}}'
+  PORT: '{{.PORT | default "8080"}}'
+
   REGISTRY_URL: '{{.REGISTRY_URL | default "127.0.0.1:5000"}}'
   USERNAME: '{{.USERNAME | default "user"}}'
   PASSWORD: '{{.PASSWORD | default "test"}}'
   VERSION: '{{.VERSION | default "latest"}}'
+
+  BINARY_FILE: '{{.BINARY_FILE | default "todo-service.bin"}}'
+  SBOM_FILE: '{{.SBOM_FILE | default "sbom.json"}}'
+  SBOM_ATT_FILE: '{{.SBOM_FILE | default "sbom.att.json"}}'
+
   ARTIFACT_NAME: '{{.ARTIFACT_NAME | default "todo-service"}}'
   ARTIFACT_TYPE: '{{.ARTIFACT_TYPE | default "application/vnd.oci.image.layer.v1.tar"}}'
 
@@ -20,6 +24,8 @@ includes:
     taskfile: ./taskfiles/Taskfile-cosign.yml
   sbom:
     taskfile: ./taskfiles/Taskfile-sbom.yml
+  scan:
+    taskfile: ./taskfiles/Taskfile-scanner.yml
 
 tasks:
   todo:
@@ -75,8 +81,10 @@ tasks:
       - "go install braces.dev/errtrace/cmd/errtrace@latest"
       - "go install github.com/CycloneDX/cyclonedx-gomod/cmd/cyclonedx-gomod@latest"
       - "go install github.com/google/ko@latest"
+      - "go install github.com/anchore/syft@latest"
 
   clean:
     cmds:
       - "rm -rf ./todo-service/{{.BINARY_FILE}}"
       - "rm -rf ./todo-service/{{.SBOM_FILE}}"
+      - "rm -rf ./todo-service/{{.SBOM_ATT_FILE}}"
