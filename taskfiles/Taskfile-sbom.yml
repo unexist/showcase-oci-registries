@@ -1,20 +1,26 @@
 version: '3'
+
 tasks:
   cyclonex:
     cmds:
       - |
         podman run -it --rm \
           -v ./todo-service:/in \
-          -v ./sbom.json:/go/sbom.json:z \
-          docker.io/cyclonedx/cyclonedx-gomod:v1 mod -json -output /go/sbom.json /in
+          -v ./sbom.json:/out/sbom.json:z \
+          docker.io/cyclonedx/cyclonedx-gomod:v1 mod -json -output /out/sbom.json /in
     sources:
       - todo-service/**/*.go
     generates:
-      - sbom.json
+      - "{{.SBOM_FILE}}"
 
-  trivy:
+  syft:
     cmds:
       - |
         podman run -it --rm \
-          -v ./{{.SBOM_FILE}}:/{{.SBOM_FILE}} \
-          docker.io/aquasec/trivy:latest sbom /{{.SBOM_FILE}}
+          -v ./todo-service:/in \
+          -v ./sbom.json:/out/sbom.json:z \
+          docker.io/anchore/syft:latest scan dir:/in -o cyclonedx-json=/out/sbom.json
+    sources:
+      - todo-service/**/*.go
+    generates:
+      - "{{.SBOM_FILE}}"
