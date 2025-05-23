@@ -8,6 +8,10 @@ tasks:
         podman run --rm -v .:/workspace -it --name oras --network=host \
           ghcr.io/oras-project/oras:main {{.ARGS}} --plain-http
 
+  cli:
+    - task: container
+      vars: { ARGS: "{{.CLI_ARGS}}" }
+
   push:
     cmds:
       - task: container

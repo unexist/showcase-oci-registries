@@ -1,0 +1,19 @@
+version: '3'
+
+tasks:
+  container:
+    internal: true
+    cmds:
+      - |
+        podman run --rm -v .:/workspace -it --name grype --network=host \
+          -v ./{{.SBOM_FILE}}:/{{.SBOM_FILE}} \
+          docker.io/anchore/grype:latest {{.ARGS}}
+
+  cli:
+    - task: container
+      vars: { ARGS: "{{.CLI_ARGS}}" }
+
+  scan:
+    cmds:
+      - task: container
+        vars: { ARGS: "sbom:/{{.SBOM_FILE}}" }

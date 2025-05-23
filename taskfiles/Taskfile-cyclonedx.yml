@@ -1,0 +1,23 @@
+version: '3'
+
+tasks:
+  container:
+    internal: true
+    cmds:
+      - |
+        podman run --rm -v .:/workspace -it --name cyclonedx --network=host \
+          -v ./todo-service:/in \
+          -v ./sbom.json:/out/sbom.json:z \
+          docker.io/cyclonedx/cyclonedx-gomod:v1 {{.ARGS}}
+
+  cli:
+    - task: container
+      vars: { ARGS: "{{.CLI_ARGS}}" }
+
+  scan:
+    - task: container
+      vars: { ARGS: "mod -json -output /out/sbom.json /in" }
+
+  clean:
+    cmds:
+      - truncate -s 0 {{.SBOM_FILE}}

@@ -23,10 +23,14 @@ includes:
     taskfile: ./taskfiles/Taskfile-oras.yml
   cosign:
     taskfile: ./taskfiles/Taskfile-cosign.yml
-  sbom:
-    taskfile: ./taskfiles/Taskfile-sbom.yml
-  scan:
-    taskfile: ./taskfiles/Taskfile-scanner.yml
+  syft:
+    taskfile: ./taskfiles/Taskfile-syft.yml
+  cyclonedx:
+    taskfile: ./taskfiles/Taskfile-cyclonedx.yml
+  trivty:
+    taskfile: ./taskfiles/Taskfile-trivy.yml
+  grype:
+    taskfile: ./taskfiles/Taskfile-grype.yml
 
 tasks:
   todo:
@@ -87,5 +91,5 @@ tasks:
   clean:
     cmds:
       - "rm -rf ./todo-service/{{.BINARY_FILE}}"
-      - "rm -rf ./todo-service/{{.SBOM_FILE}}"
-      - "rm -rf ./todo-service/{{.SBOM_ATT_FILE}}"
+      - "truncate -s 0./todo-service/{{.SBOM_FILE}}"
+      - "truncate -s 0 ./todo-service/{{.SBOM_ATT_FILE}}"

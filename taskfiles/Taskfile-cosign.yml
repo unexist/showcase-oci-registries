@@ -16,6 +16,10 @@ tasks:
           -e COSIGN_PASSWORD={{.COSIGN_PASSWORD}} \
           ghcr.io/sigstore/cosign/cosign:v2.4.1 {{.ARGS}}
 
+  cli:
+    - task: container
+      vars: { ARGS: "{{.CLI_ARGS}}" }
+
   blob:
     cmds:
       - task: container
