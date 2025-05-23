@@ -30,10 +30,25 @@ tasks:
     cmds:
       - task: container
         vars: { ARGS: "attest-blob --yes \
-          --type https://cyclonedx.org/bom/v1.6 \
+          --type cyclonedx \
           --predicate /workspace/{{.SBOM_FILE}} \
-          --output-attestation /workspace/{{.SBOM_ATT_FILE}} \
+          --output-signature /workspace/{{.SBOM_ATT_FILE}} \
           /workspace/todo-service/{{.BINARY_FILE}}" }
+
+  attach:
+    cmds:
+      - task: container
+        vars: { ARGS: "attach attestation \
+          --attestation /workspace/{{.SBOM_ATT_FILE}} \
+           {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
+
+  attach-sbom:
+    cmds:
+      - task: container
+        vars: { ARGS: "attach sbom \
+          --type cyclonedx \
+          --sbom /workspace/{{.SBOM_FILE}} \
+           {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
 
   sign:
     cmds:
