@@ -7,7 +7,6 @@ tasks:
       - |
         podman run --rm -v .:/workspace -it --name syft --network=host \
           -v ./todo-service:/in \
-          -v ./sbom.json:/out/sbom.json:z \
           docker.io/anchore/syft:latest {{.ARGS}}
 
   cli:
@@ -16,7 +15,7 @@ tasks:
 
   scan:
     - task: container
-      vars: { ARGS: "scan dir:/in -o cyclonedx-json=/out/sbom.json" }
+      vars: { ARGS: "scan dir:/in -o cyclonedx-json=/workspace/{{.SBOM_FILE}}" }
 
   clean:
     cmds:

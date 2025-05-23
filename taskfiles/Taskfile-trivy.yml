@@ -6,7 +6,6 @@ tasks:
     cmds:
       - |
         podman run --rm -v .:/workspace -it --name oras --network=host \
-          -v ./{{.SBOM_FILE}}:/{{.SBOM_FILE}} \
           docker.io/aquasec/trivy:latest {{.ARGS}}
 
   cli:
@@ -16,4 +15,4 @@ tasks:
   scan:
     cmds:
     - task: container
-      vars: { ARGS: "sbom /{{.SBOM_FILE}}" }
+      vars: { ARGS: "sbom /workspace/{{.SBOM_FILE}}" }

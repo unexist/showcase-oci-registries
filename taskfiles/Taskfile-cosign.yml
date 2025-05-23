@@ -26,17 +26,14 @@ tasks:
         vars: { ARGS: "upload blob -f /workspace/todo-service/{{.BINARY_FILE}} \
           {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-cosign" }
 
-  sbom:
+  attest:
     cmds:
       - task: container
         vars: { ARGS: "attest-blob --yes \
           --type https://cyclonedx.org/bom/v1.6 \
           --predicate /workspace/{{.SBOM_FILE}} \
+          --output-attestation /workspace/{{.SBOM_ATT_FILE}} \
           /workspace/todo-service/{{.BINARY_FILE}}" }
-    #sources:
-    #  - {{.SBOM_FILE}}
-    #generates:
-    #  - sbom.att
 
   sign:
     cmds:

@@ -7,7 +7,6 @@ tasks:
       - |
         podman run --rm -v .:/workspace -it --name cyclonedx --network=host \
           -v ./todo-service:/in \
-          -v ./sbom.json:/out/sbom.json:z \
           docker.io/cyclonedx/cyclonedx-gomod:v1 {{.ARGS}}
 
   cli:
@@ -16,7 +15,7 @@ tasks:
 
   scan:
     - task: container
-      vars: { ARGS: "mod -json -output /out/sbom.json /in" }
+      vars: { ARGS: "mod -json -output /workspace/{{.SBOM_FILE}} /in" }
 
   clean:
     cmds:
