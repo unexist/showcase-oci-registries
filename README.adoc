@@ -16,3 +16,6 @@ This project holds an example for OCI registries and related tooling.
 - https://github.com/anchore/syft
 - https://anchore.com/sbom/creating-sbom-attestations-using-syft-and-sigstore/
 - https://blog.christophersmart.com/2021/01/31/volumes-and-rootless-podman/
+- https://github.com/opencontainers/artifacts/blob/main/artifact-authors.md
+- application/vnd.cyclonedx+json
+- https://github.com/project-zot/zot/issues/2415
