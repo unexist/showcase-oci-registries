@@ -6,15 +6,15 @@ env:
   REGISTRY_URL: '{{.REGISTRY_URL | default "127.0.0.1:5000"}}'
   USERNAME: '{{.USERNAME | default "user"}}'
   PASSWORD: '{{.PASSWORD | default "test"}}'
-  VERSION: '{{.VERSION | default "latest"}}'
+  TAG: '{{.TAG | default "latest"}}'
 
   BINARY_FILE: '{{.BINARY_FILE | default "todo-service.bin"}}'
   SBOM_FILE: '{{.SBOM_FILE | default "sbom.json"}}'
   SBOM_ATT_FILE: '{{.SBOM_ATT_FILE | default "sbom.attestation.json"}}'
 
   ARTIFACT_NAME: '{{.ARTIFACT_NAME | default "todo-service"}}'
-  ARTIFACT_TYPE: '{{.ARTIFACT_TYPE | default "application/vnd.oci.image.layer.v1.tar"}}'
-  ARTIFACT_SBOM_TYPE: '{{.ARTIFACT_SBOM_TYPE | default "example/sbom"}}'
+  ARTIFACT_TYPE: '{{.ARTIFACT_TYPE | default "showcase/todo"}}'
+  ARTIFACT_SBOM_TYPE: '{{.ARTIFACT_SBOM_TYPE | default "showcase/sbom"}}'
 
 includes:
   registry:
