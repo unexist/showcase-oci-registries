@@ -71,10 +71,6 @@ tasks:
     cmds:
       - "cd todo-service; KO_DOCKER_REPO={{.REGISTRY_URL}}/{{.ARTIFACT_NAME}} ko build ."
 
-  sbom:
-    cmds:
-      - ""
-
   run:
     deps: [build]
     cmds:
