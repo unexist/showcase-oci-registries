@@ -1,41 +1,69 @@
 version: '3'
 
+env:
+  INSECURE: '{{.INSECURE | default "--plain-http"}}'
+
 tasks:
   container:
     internal: true
     cmds:
       - |
         podman run --rm -v .:/workspace -it --name oras --network=host \
-          ghcr.io/oras-project/oras:main {{.ARGS}} --plain-http
+          ghcr.io/oras-project/oras:main {{.ARGS}} {{.INSECURE}}
 
   cli:
     - task: container
-      vars: { ARGS: "{{.CLI_ARGS}}" }
+      vars: { INSECURE: "", ARGS: "{{.CLI_ARGS}}" }
 
   push:
     cmds:
       - task: container
-        vars: { ARGS: "push --artifact-type {{.ARTIFACT_TYPE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.VERSION}} todo-service/{{.BINARY_FILE}}" }
+        vars: { ARGS: "push {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.TAG}} \
+          --artifact-type {{.ARTIFACT_TYPE}} \
+          todo-service/{{.BINARY_FILE}}:application/octet-stream" }
 
   pull:
     cmds:
       - task: container
-        vars: { ARGS: "pull {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.VERSION}}" }
+        vars: { ARGS: "pull {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.TAG}}" }
+
+  delete:
+    cmds:
+      - task: container
+        vars: { ARGS: "manifest delete {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.TAG}}" }
+
+  signature:
+    cmds:
+      - |
+        cat <<EOF > signature.json
+        {"artifact": "{{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.TAG}}", "signature": "{{.USER}}"}
+        EOF
+
+      - task: container
+        vars: { ARGS: "attach {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.TAG}} \
+          --artifact-type signature/example \
+          signature.json:application/json" }
 
   blob:
     cmds:
       - task: container
-        vars: { ARGS: "blob push --descriptor --pretty {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras todo-service/{{.BINARY_FILE}}" }
+        vars: { ARGS: "blob push {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras \
+           --descriptor --pretty \
+          todo-service/{{.BINARY_FILE}}" }
 
-  sbom:
+  attach-sbom:
     cmds:
       - task: container
-        vars: { ARGS: "attach --artifact-type {{.ARTIFACT_SBOM_TYPE}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.VERSION}} {{.SBOM_FILE}}" }
+        vars: { ARGS: "attach {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.TAG}} \
+          --artifact-type application/vnd.cyclonedx+json \
+          {{.SBOM_FILE}}:application/vnd.cyclonedx+json" }
 
   annotate:
     cmds:
       - task: container
-        vars: { ARGS: "push --annotation {{.ARGS}} {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.VERSION}} todo-service/{{.BINARY_FILE}}" }
+        vars: { ARGS: "push {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.TAG}} \
+          --annotation {{.ARGS}} \
+          todo-service/{{.BINARY_FILE}}" }
 
   list:
     cmds:
@@ -45,4 +73,14 @@ tasks:
   discover:
     cmds:
       - task: container
-        vars: { ARGS: "discover {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.VERSION}}" }
+        vars: { ARGS: "discover --format tree {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.TAG}}" }
+
+  manifest:
+    cmds:
+      - task: container
+        vars: { ARGS: "manifest fetch --pretty {{.REGISTRY_URL}}/{{.ARTIFACT_NAME}}-oras:{{.TAG}}" }
+
+  clean:
+    cmds:
+      - truncate -s 0 {{.COSIGN_SIG}}
+      - truncate -s 0 signature.json

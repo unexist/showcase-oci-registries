@@ -30,7 +30,7 @@ tasks:
     cmds:
       - task: container
         vars: { ARGS: "attest-blob --yes \
-          --type cyclonedx \
+          --type cyclonedx-json \
           --predicate /workspace/{{.SBOM_FILE}} \
           --output-signature /workspace/{{.SBOM_ATT_FILE}} \
           /workspace/todo-service/{{.BINARY_FILE}}" }
